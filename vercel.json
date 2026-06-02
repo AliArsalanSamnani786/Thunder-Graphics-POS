@@ -1,23 +1,13 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next"
+      "source": "/api/v1/(.*)",
+      "destination": "/apps/api/dist/main.js"
     },
     {
-      "src": "apps/api/package.json",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/v1/(.*)",
-      "dest": "apps/api/dist/main.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
+      "source": "/(.*)",
+      "destination": "/apps/web/$1"
     }
   ]
 }
