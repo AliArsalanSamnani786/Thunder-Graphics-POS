@@ -5,11 +5,11 @@
   "description": "Thunder POS enterprise multi-tenant SaaS platform.",
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "dev": "corepack pnpm --parallel --filter @thunder-pos/web --filter @thunder-pos/api dev",
-    "build": "corepack pnpm -r build",
-    "lint": "corepack pnpm -r lint",
-    "typecheck": "corepack pnpm -r typecheck",
-    "test": "corepack pnpm -r test",
+    "dev": "pnpm --parallel --filter @thunder-pos/web --filter @thunder-pos/api dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
