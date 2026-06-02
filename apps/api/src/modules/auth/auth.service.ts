@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
-import { PrismaService } from "../database/prisma.service";
+import { PrismaService } from "../../../common/database/prisma.service";
 import { SecurityService } from "../security/security.service";
 import * as argon2 from "argon2";
 import { addTrialDays, formatBusinessId } from "@thunder-pos/shared";
