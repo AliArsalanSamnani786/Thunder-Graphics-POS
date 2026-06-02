@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: #101820;
+  --paper: #f8faf8;
+  --storm: #24323d;
+  --bolt: #f5c542;
+  --mint: #5ed6a0;
+  --ember: #ef6f4e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(245, 197, 66, 0.16), transparent 38%),
+    radial-gradient(circle at top right, rgba(94, 214, 160, 0.18), transparent 32%),
+    var(--paper);
+  color: var(--ink);
+  font-family: Aptos, "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell-grid {
+  background-image:
+    linear-gradient(rgba(16, 24, 32, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 24, 32, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "thunder-pos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Thunder POS enterprise multi-tenant SaaS platform.",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "corepack pnpm --parallel --filter @thunder-pos/web --filter @thunder-pos/api dev",
+    "build": "corepack pnpm -r build",
+    "lint": "corepack pnpm -r lint",
+    "typecheck": "corepack pnpm -r typecheck",
+    "test": "corepack pnpm -r test",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "prisma": "^5.22.0",
+    "typescript": "^5.6.3"
+  }
+}
