@@ -44,7 +44,7 @@ export default function LandingPage() {
               <a href="#contact" className="inline-flex items-center justify-center border border-thunder-ink px-6 py-4 font-bold">
                 Book Demo
               </a>
-              <a href="https://wa.me/0000000000" className="inline-flex items-center justify-center bg-thunder-bolt px-6 py-4 font-bold">
+              <a href="https://wa.me/923152969396" className="inline-flex items-center justify-center bg-thunder-bolt px-6 py-4 font-bold">
                 Contact on WhatsApp
               </a>
             </div>
