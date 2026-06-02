@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Thunder POS
 
 This workspace was generated from `C:\Users\CZ\Desktop\Master Prompt.txt`.
@@ -13,3 +14,6 @@ Recommended next build order:
 3. Implement POS, inventory, and accounting transaction flows together because they must stay financially consistent.
 4. Add reporting, offline sync, AI insights, monitoring, and CI/CD after the core domain is stable.
 
+=======
+# Thunder-Graphics-POS
+>>>>>>> origin/main
