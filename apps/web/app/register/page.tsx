@@ -52,31 +52,31 @@ export default function RegisterPage() {
         <form className="mt-8 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
           <label className="grid gap-2 text-sm font-bold">
             Business Name
-            <input className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, businessName: e.target.value})} required />
+            <input name="businessName" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, businessName: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Owner Name
-            <input className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, ownerName: e.target.value})} required />
+            <input name="ownerName" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, ownerName: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Email Address
-            <input type="email" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
+            <input name="email" type="email" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Mobile Number
-            <input className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, mobileNumber: e.target.value})} required />
+            <input name="mobileNumber" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, mobileNumber: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             WhatsApp Number
-            <input className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} required />
+            <input name="whatsappNumber" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Country
-            <input className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, country: e.target.value})} required />
+            <input name="country" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, country: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold md:col-span-2">
             Password
-            <input type="password" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
+            <input name="password" type="password" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
           </label>
           <label className="flex gap-3 text-sm md:col-span-2">
             <input type="checkbox" onChange={(e) => setFormData({...formData, acceptedTerms: e.target.checked})} required />
