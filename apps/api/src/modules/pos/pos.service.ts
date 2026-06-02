@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { PrismaService } from "../../../common/database/prisma.service";
+import { PrismaService } from "../../common/database/prisma.service";
+import { Prisma } from "@prisma/client";
 import type { PaymentMethod } from "@thunder-pos/shared";
 
 export interface CompleteSaleInput {
@@ -14,7 +15,7 @@ export class PosService {
   constructor(private readonly prisma: PrismaService) {}
 
   async completeSale(input: CompleteSaleInput) {
-    return await this.prisma.$transaction(async (tx) => {
+    return await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const subtotal = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
       const discount = input.items.reduce((sum, item) => sum + (item.discountAmount ?? 0), 0);
       const tax = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity * item.taxRate, 0);
@@ -78,7 +79,7 @@ export class PosService {
       }
 
       // 3. Post Accounting Journal
-      const journal = await tx.journalEntry.create({
+      await tx.journalEntry.create({
         data: {
           tenantId: input.tenantId,
           description: `Sale ${sale.receiptNo}`,

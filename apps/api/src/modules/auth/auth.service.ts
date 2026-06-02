@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
-import { PrismaService } from "../../../common/database/prisma.service";
+import { PrismaService } from "../../common/database/prisma.service";
+import { Prisma } from "@prisma/client";
 import { SecurityService } from "../security/security.service";
 import * as argon2 from "argon2";
 import { addTrialDays, formatBusinessId } from "@thunder-pos/shared";
@@ -34,7 +35,7 @@ export class AuthService {
     }
 
     try {
-      const tenant = await this.prisma.$transaction(async (tx) => {
+      const tenant = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         const businessId = formatBusinessId(1);
         const passwordHash = await argon2.hash(dto.password);
 
