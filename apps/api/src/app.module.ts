@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
+import { DatabaseModule } from "./common/database/database.module";
 import { AccountingModule } from "./modules/accounting/accounting.module";
 import { AiModule } from "./modules/ai/ai.module";
 import { AuthModule } from "./modules/auth/auth.module";
@@ -16,6 +17,7 @@ import { TenantModule } from "./modules/tenant/tenant.module";
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
+    DatabaseModule,
     HealthModule,
     TenantModule,
     SecurityModule,
