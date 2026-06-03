@@ -20,8 +20,8 @@ export class SecurityService {
     if (input.phone === input.whatsapp) reasons.push("Phone and WhatsApp are identical; monitor duplicate-trial history.");
     if (input.latitude === undefined || input.longitude === undefined) reasons.push("Location verification was not provided.");
 
-    if (reasons.length >= 3) return { level: "HIGH", reasons };
-    if (reasons.length >= 1) return { level: "MEDIUM", reasons };
+    if (reasons.length >= 4) return { level: "HIGH", reasons };
+    if (reasons.length >= 2) return { level: "MEDIUM", reasons };
     return { level: "LOW", reasons };
   }
 }

@@ -36,7 +36,8 @@ export class AuthService {
 
     try {
       const tenant = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-        const businessId = formatBusinessId(1);
+        const count = await tx.tenant.count();
+        const businessId = formatBusinessId(count + 1);
         const passwordHash = await argon2.hash(dto.password);
 
         const newTenant = await tx.tenant.create({

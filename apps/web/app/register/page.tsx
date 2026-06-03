@@ -80,7 +80,11 @@ export default function RegisterPage() {
           </label>
           <label className="flex gap-3 text-sm md:col-span-2">
             <input type="checkbox" onChange={(e) => setFormData({...formData, acceptedTerms: e.target.checked})} required />
-            I accept the Terms and Privacy Policy.
+            I accept the <Link href="/terms" className="text-thunder-ember underline">Terms of Service</Link>.
+          </label>
+          <label className="flex gap-3 text-sm md:col-span-2">
+            <input type="checkbox" onChange={(e) => setFormData({...formData, acceptedPrivacy: e.target.checked})} required />
+            I accept the <Link href="/privacy" className="text-thunder-ember underline">Privacy Policy</Link>.
           </label>
           <button className="bg-thunder-ink px-6 py-4 font-bold text-white md:col-span-2 disabled:opacity-50" type="submit" disabled={loading}>
             {loading ? "Creating..." : "Create Trial Workspace"}
