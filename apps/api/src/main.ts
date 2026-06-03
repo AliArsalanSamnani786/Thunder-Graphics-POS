@@ -11,7 +11,11 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1");
   app.enableCors({
-    origin: config.get<string>("APP_URL") ?? "http://localhost:3000",
+    origin: [
+      config.get<string>("APP_URL") ?? "http://localhost:3000",
+      "https://thunder-graphics-pos.vercel.app",
+      /\.vercel\.app$/
+    ],
     credentials: true
   });
   app.use(helmet());
