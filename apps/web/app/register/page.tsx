@@ -15,6 +15,7 @@ export default function RegisterPage() {
     country: "",
     password: "",
     acceptedTerms: false,
+    acceptedPrivacy: false,
   });
   const [loading, setLoading] = useState(false);
 
