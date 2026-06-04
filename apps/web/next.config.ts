@@ -14,7 +14,6 @@ function normalizeOrigin(value?: string) {
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  outputFileTracingRoot: new URL("../..", import.meta.url).pathname,
   async rewrites() {
     const apiUrl = normalizeOrigin(process.env.API_URL || process.env.NEXT_PUBLIC_API_URL);
     const appUrl = normalizeOrigin(process.env.APP_URL);
