@@ -34,10 +34,11 @@ export default function RegisterPage() {
         alert("Registration successful! Redirecting to login...");
         router.push("/login");
       } else {
-        alert("Registration failed. Please try again.");
+        const errorData = await response.json();
+        alert(`Registration failed: ${errorData.message || "Please try again."}`);
       }
     } catch (error) {
-      alert("An error occurred.");
+      alert(`An error occurred: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setLoading(false);
     }
