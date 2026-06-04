@@ -37,5 +37,11 @@ export class RegisterBusinessDto {
   @IsOptional()
   @IsString()
   deviceFingerprint?: string;
+
+  @IsOptional()
+  latitude?: number;
+
+  @IsOptional()
+  longitude?: number;
 }
 

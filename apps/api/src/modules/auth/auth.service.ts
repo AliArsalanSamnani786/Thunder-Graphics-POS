@@ -27,7 +27,9 @@ export class AuthService {
       ipAddress: metadata.ipAddress,
       deviceFingerprint: dto.deviceFingerprint,
       phone: dto.mobileNumber,
-      whatsapp: dto.whatsappNumber
+      whatsapp: dto.whatsappNumber,
+      latitude: dto.latitude,
+      longitude: dto.longitude
     });
 
     if (risk.level === "HIGH") {
