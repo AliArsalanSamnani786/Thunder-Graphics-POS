@@ -23,32 +23,11 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
 
-    let location = { latitude: undefined, longitude: undefined };
-
-    try {
-      // Explicitly ask for location permission
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
-        });
-      });
-      location = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      };
-    } catch (err) {
-      console.warn("Location permission denied or unavailable", err);
-      // We allow registration even if location is denied for now, 
-      // based on the previous requirement to unblock registration.
-    }
-
     try {
       const response = await fetch("/api/v1/auth/register-business", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, ...location }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
