@@ -79,18 +79,24 @@ export class PosService {
       }
 
       // 3. Post Accounting Journal
-      await tx.journalEntry.create({
-        data: {
-          tenantId: input.tenantId,
-          description: `Sale ${sale.receiptNo}`,
-          lines: {
-            create: [
-              { tenantId: input.tenantId, accountId: "REVENUE_ACC_ID", credit: total },
-              { tenantId: input.tenantId, accountId: "CASH_ACC_ID", debit: total },
-            ],
+      // Note: In a production system, these account IDs should be resolved per-tenant from the Chart of Accounts.
+      const revenueAccount = await tx.account.findFirst({ where: { tenantId: input.tenantId, code: "REV-001" } });
+      const cashAccount = await tx.account.findFirst({ where: { tenantId: input.tenantId, code: "CASH-001" } });
+
+      if (revenueAccount && cashAccount) {
+        await tx.journalEntry.create({
+          data: {
+            tenantId: input.tenantId,
+            description: `Sale ${sale.receiptNo}`,
+            lines: {
+              create: [
+                { tenantId: input.tenantId, accountId: revenueAccount.id, credit: total },
+                { tenantId: input.tenantId, accountId: cashAccount.id, debit: total },
+              ],
+            },
           },
-        },
-      });
+        });
+      }
 
       return sale;
     });

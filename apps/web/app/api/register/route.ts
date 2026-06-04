@@ -49,7 +49,11 @@ export async function POST(request: Request) {
     }
 
     const apiBaseUrl = getApiBaseUrl(request);
-    const upstream = await fetch(`${apiBaseUrl}/api/v1/auth/register-business`, {
+    const targetUrl = `${apiBaseUrl}/api/v1/auth/register-business`;
+    
+    console.log(`[Proxy] Registering business at: ${targetUrl}`);
+
+    const upstream = await fetch(targetUrl, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
