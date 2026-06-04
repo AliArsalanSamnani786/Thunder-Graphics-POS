@@ -9,6 +9,10 @@ function getApiBaseUrl(request: Request) {
 }
 
 function getGatewayMessage(status: number, payload: unknown) {
+  if (status === 404) {
+    return "Registration API was not found. Check API_URL and confirm /api/v1/health works.";
+  }
+
   if (payload && typeof payload === "object") {
     const record = payload as Record<string, unknown>;
     const message = record.message ?? record.error;
@@ -17,13 +21,9 @@ function getGatewayMessage(status: number, payload: unknown) {
       return message.join(" ");
     }
 
-    if (typeof message === "string" && message.trim()) {
+    if (typeof message === "string" && message.trim() && !message.includes("<!DOCTYPE html>")) {
       return message;
     }
-  }
-
-  if (status === 404) {
-    return "Registration API was not found. Check API_URL and confirm /api/v1/health works.";
   }
 
   return `Registration API returned HTTP ${status}. Check the API deployment logs.`;
@@ -51,7 +51,9 @@ export async function POST(request: Request) {
     const apiBaseUrl = getApiBaseUrl(request);
     const targetUrl = `${apiBaseUrl}/api/v1/auth/register-business`;
     
-    console.log(`[Proxy] Registering business at: ${targetUrl}`);
+    console.log(`[Proxy] Request URL: ${request.url}`);
+    console.log(`[Proxy] API Base URL: ${apiBaseUrl}`);
+    console.log(`[Proxy] Target URL: ${targetUrl}`);
 
     const upstream = await fetch(targetUrl, {
       method: "POST",

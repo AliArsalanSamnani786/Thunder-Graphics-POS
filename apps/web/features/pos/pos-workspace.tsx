@@ -14,15 +14,15 @@ import {
   Trash2,
   Wallet
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { calculateCartTotals, type CartItem, useCartStore } from "./cart-store";
 
-const catalog: CartItem[] = [
-  { variantId: "rice-5kg", name: "Rice 5kg", quantity: 1, unitPrice: 24, taxRate: 0.1 },
-  { variantId: "oil-1l", name: "Cooking Oil", quantity: 1, unitPrice: 8.5, taxRate: 0.08 },
-  { variantId: "milk-pack", name: "Milk Pack", quantity: 1, unitPrice: 3.25, taxRate: 0.05 },
-  { variantId: "notebook-a5", name: "Notebook", quantity: 1, unitPrice: 2.75, taxRate: 0.03 },
-  { variantId: "charger-usb-c", name: "Phone Charger", quantity: 1, unitPrice: 14.99, taxRate: 0.1 },
+const catalog: (CartItem & { barcode?: string })[] = [
+  { variantId: "rice-5kg", name: "Rice 5kg", quantity: 1, unitPrice: 24, taxRate: 0.1, barcode: "8901234567890" },
+  { variantId: "oil-1l", name: "Cooking Oil", quantity: 1, unitPrice: 8.5, taxRate: 0.08, barcode: "8901234567891" },
+  { variantId: "milk-pack", name: "Milk Pack", quantity: 1, unitPrice: 3.25, taxRate: 0.05, barcode: "8901234567892" },
+  { variantId: "notebook-a5", name: "Notebook", quantity: 1, unitPrice: 2.75, taxRate: 0.03, barcode: "8901234567893" },
+  { variantId: "charger-usb-c", name: "Phone Charger", quantity: 1, unitPrice: 14.99, taxRate: 0.1, barcode: "8901234567894" },
   { variantId: "quick-sale", name: "Quick Sale", quantity: 1, unitPrice: 5, taxRate: 0 }
 ];
 
@@ -39,15 +39,24 @@ function formatCurrency(value: number) {
 
 export function PosWorkspace() {
   const [query, setQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const items = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const clear = useCartStore((state) => state.clear);
-  const totals = useMemo(() => calculateCartTotals(items), [items]);
+  const totals = calculateCartTotals(items);
 
-  const filteredCatalog = catalog.filter((product) => product.name.toLowerCase().includes(query.toLowerCase()));
+  const filteredCatalog = catalog.filter((product) => 
+    product.name.toLowerCase().includes(query.toLowerCase()) || 
+    product.barcode?.includes(query) ||
+    product.variantId.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const handleScanClick = () => {
+    searchInputRef.current?.focus();
+  };
 
   return (
     <main className="grid min-h-screen gap-4 bg-thunder-rain p-4 lg:grid-cols-[1fr_440px]">
@@ -58,7 +67,10 @@ export function PosWorkspace() {
             <h1 className="font-display text-4xl font-bold">POS Billing</h1>
           </div>
           <div className="grid grid-cols-3 gap-2 text-sm font-bold">
-            <button className="inline-flex h-11 items-center justify-center gap-2 border border-thunder-ink/15 px-3">
+            <button 
+              className="inline-flex h-11 items-center justify-center gap-2 border border-thunder-ink/15 px-3 hover:bg-thunder-rain transition"
+              onClick={handleScanClick}
+            >
               <Barcode size={17} /> Scan
             </button>
             <button className="inline-flex h-11 items-center justify-center gap-2 border border-thunder-ink/15 px-3">
@@ -73,6 +85,7 @@ export function PosWorkspace() {
         <label className="mt-5 flex h-14 items-center gap-3 border border-thunder-ink/20 px-4">
           <Search className="shrink-0 text-thunder-steel" size={21} />
           <input
+            ref={searchInputRef}
             className="h-full w-full bg-transparent text-lg outline-none"
             placeholder="Search product, scan barcode, or scan QR"
             value={query}
