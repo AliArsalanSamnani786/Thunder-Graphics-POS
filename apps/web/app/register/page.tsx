@@ -80,14 +80,6 @@ export default function RegisterPage() {
             Password
             <input name="password" type="password" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
           </label>
-          <label className="flex gap-3 text-sm md:col-span-2">
-            <input type="checkbox" onChange={(e) => setFormData({...formData, acceptedTerms: e.target.checked})} required />
-            I accept the <Link href="/terms" className="text-thunder-ember underline">Terms of Service</Link>.
-          </label>
-          <label className="flex gap-3 text-sm md:col-span-2">
-            <input type="checkbox" onChange={(e) => setFormData({...formData, acceptedPrivacy: e.target.checked})} required />
-            I accept the <Link href="/privacy" className="text-thunder-ember underline">Privacy Policy</Link>.
-          </label>
           <button className="bg-thunder-ink px-6 py-4 font-bold text-white md:col-span-2 disabled:opacity-50" type="submit" disabled={loading}>
             {loading ? "Creating..." : "Create Trial Workspace"}
           </button>

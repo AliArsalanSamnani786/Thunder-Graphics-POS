@@ -19,10 +19,6 @@ export class AuthService {
   ) {}
 
   async registerBusiness(dto: RegisterBusinessDto, metadata: RequestMetadata) {
-    if (!dto.acceptedTerms || !dto.acceptedPrivacy) {
-      throw new BadRequestException("Terms and privacy policy acceptance are required.");
-    }
-
     const risk = this.securityService.evaluateRegistrationRisk({
       ipAddress: metadata.ipAddress,
       deviceFingerprint: dto.deviceFingerprint,
