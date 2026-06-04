@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/v1/:path*",
-      "destination": "apps/api/src/vercel.ts"
+      "destination": "/api/handler"
     },
     {
       "source": "/(.*)",
