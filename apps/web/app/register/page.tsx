@@ -28,7 +28,7 @@ const initialFormData: RegistrationFormData = {
   acceptedPrivacy: false
 };
 
-function getRegistrationError(payload: unknown) {
+function getRegistrationError(payload: unknown, status: number) {
   if (
     payload &&
     typeof payload === "object" &&
@@ -45,7 +45,15 @@ function getRegistrationError(payload: unknown) {
     }
   }
 
-  return "Registration failed. Please check your details and try again.";
+  if (payload && typeof payload === "object" && "error" in payload) {
+    const error = (payload as { error?: unknown }).error;
+
+    if (typeof error === "string" && error.trim()) {
+      return error;
+    }
+  }
+
+  return `Registration failed with HTTP ${status}. Check API_URL and Vercel Function Logs.`;
 }
 
 export default function RegisterPage() {
@@ -71,7 +79,7 @@ export default function RegisterPage() {
         router.push("/login");
       } else {
         const errorData = await response.json().catch(() => null);
-        setErrorMessage(getRegistrationError(errorData));
+        setErrorMessage(getRegistrationError(errorData, response.status));
       }
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "Unknown error");

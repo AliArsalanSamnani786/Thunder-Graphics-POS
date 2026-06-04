@@ -1,12 +1,26 @@
 import type { NextConfig } from "next";
 
+function normalizeOrigin(value?: string) {
+  if (!value) {
+    return undefined;
+  }
+
+  try {
+    return new URL(value.includes("://") ? value : `https://${value}`).origin;
+  } catch {
+    return undefined;
+  }
+}
+
 const nextConfig: NextConfig = {
   typedRoutes: true,
   outputFileTracingRoot: new URL("../..", import.meta.url).pathname,
   async rewrites() {
-    const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = normalizeOrigin(process.env.API_URL || process.env.NEXT_PUBLIC_API_URL);
+    const appUrl = normalizeOrigin(process.env.APP_URL);
+    const vercelUrl = normalizeOrigin(process.env.VERCEL_URL);
 
-    if (!apiUrl) {
+    if (!apiUrl || apiUrl === appUrl || apiUrl === vercelUrl) {
       return [];
     }
 

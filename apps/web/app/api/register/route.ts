@@ -8,6 +8,27 @@ function getApiBaseUrl(request: Request) {
   ).replace(/\/$/, "");
 }
 
+function getGatewayMessage(status: number, payload: unknown) {
+  if (payload && typeof payload === "object") {
+    const record = payload as Record<string, unknown>;
+    const message = record.message ?? record.error;
+
+    if (Array.isArray(message)) {
+      return message.join(" ");
+    }
+
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+  }
+
+  if (status === 404) {
+    return "Registration API was not found. Check API_URL and confirm /api/v1/health works.";
+  }
+
+  return `Registration API returned HTTP ${status}. Check the API deployment logs.`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -36,11 +57,18 @@ export async function POST(request: Request) {
     });
 
     const contentType = upstream.headers.get("content-type") ?? "";
-    const payload = contentType.includes("application/json")
+    const payload: unknown = contentType.includes("application/json")
       ? await upstream.json()
       : { message: await upstream.text() };
 
-    return NextResponse.json(payload, { status: upstream.status });
+    if (!upstream.ok) {
+      return NextResponse.json(
+        { message: getGatewayMessage(upstream.status, payload), upstreamStatus: upstream.status },
+        { status: upstream.status }
+      );
+    }
+
+    return NextResponse.json(payload);
   } catch (error) {
     console.error("Registration proxy error:", error);
     return NextResponse.json(
