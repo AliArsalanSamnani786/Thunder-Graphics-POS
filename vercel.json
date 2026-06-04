@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/v1/:path*",
-      "destination": "/api/index.js"
+      "destination": "apps/api/src/vercel.ts"
     },
     {
       "source": "/(.*)",
