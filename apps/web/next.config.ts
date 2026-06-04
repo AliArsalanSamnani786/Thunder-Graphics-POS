@@ -4,11 +4,16 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   outputFileTracingRoot: new URL("../..", import.meta.url).pathname,
   async rewrites() {
-    const api_url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiUrl) {
+      return [];
+    }
+
     return [
       {
         source: "/api/v1/:path*",
-        destination: `${api_url}/api/v1/:path*`
+        destination: `${apiUrl}/api/v1/:path*`
       }
     ];
   }

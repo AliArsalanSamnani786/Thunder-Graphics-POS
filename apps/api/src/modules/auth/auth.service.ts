@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "../../common/database/prisma.service";
 import { Prisma } from "@prisma/client";
 import { SecurityService } from "../security/security.service";
@@ -19,6 +19,10 @@ export class AuthService {
   ) {}
 
   async registerBusiness(dto: RegisterBusinessDto, metadata: RequestMetadata) {
+    if (!dto.acceptedTerms || !dto.acceptedPrivacy) {
+      throw new BadRequestException("You must accept the terms and privacy policy to register.");
+    }
+
     const risk = this.securityService.evaluateRegistrationRisk({
       ipAddress: metadata.ipAddress,
       deviceFingerprint: dto.deviceFingerprint,
@@ -65,9 +69,18 @@ export class AuthService {
         message: "Business registered successfully. Please verify your email and phone."
       };
     } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        const target = Array.isArray(error.meta?.target) ? error.meta.target.join(", ") : "";
+
+        throw new ConflictException(
+          target.includes("email")
+            ? "A user with this email already exists."
+            : "A business registration with these details already exists."
+        );
+      }
+
       console.error("Registration error:", error);
       throw new InternalServerErrorException("An error occurred during registration.");
     }
   }
 }
-

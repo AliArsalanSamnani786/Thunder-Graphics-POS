@@ -28,8 +28,13 @@ export class RegisterBusinessDto {
   @Length(10, 128)
   password!: string;
 
+  @IsBoolean()
+  acceptedTerms!: boolean;
+
+  @IsBoolean()
+  acceptedPrivacy!: boolean;
+
   @IsOptional()
   @IsString()
   deviceFingerprint?: string;
 }
-

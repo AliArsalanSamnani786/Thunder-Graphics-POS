@@ -1,48 +1,51 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import * as argon2 from 'argon2';
-import { addTrialDays, formatBusinessId } from '@thunder-pos/shared';
+import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+function getApiBaseUrl(request: Request) {
+  return (
+    process.env.API_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    new URL(request.url).origin
+  ).replace(/\/$/, "");
+}
 
 export async function POST(request: Request) {
   try {
-    const dto = await request.json();
-
-    // Simplified business registration logic
-    const tenant = await prisma.$transaction(async (tx) => {
-      const count = await tx.tenant.count();
-      const businessId = formatBusinessId(count + 1);
-      const passwordHash = await argon2.hash(dto.password);
-
-      return await tx.tenant.create({
-        data: {
-          businessId,
-          name: dto.businessName,
-          country: dto.country,
-          status: "TRIAL",
-          trialStartAt: new Date(),
-          trialEndAt: addTrialDays(new Date()),
-          users: {
-            create: {
-              name: dto.ownerName,
-              email: dto.email,
-              phone: dto.mobileNumber,
-              passwordHash,
-              status: "PENDING_VERIFICATION"
-            }
-          }
-        }
-      });
+    const body = await request.json();
+    const headers = new Headers({
+      Accept: "application/json",
+      "Content-Type": "application/json"
     });
 
-    return NextResponse.json({
-      tenantId: tenant.id,
-      businessId: tenant.businessId,
-      message: "Business registered successfully."
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const userAgent = request.headers.get("user-agent");
+
+    if (forwardedFor) {
+      headers.set("x-forwarded-for", forwardedFor);
+    }
+
+    if (userAgent) {
+      headers.set("user-agent", userAgent);
+    }
+
+    const apiBaseUrl = getApiBaseUrl(request);
+    const upstream = await fetch(`${apiBaseUrl}/api/v1/auth/register-business`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+      cache: "no-store"
     });
+
+    const contentType = upstream.headers.get("content-type") ?? "";
+    const payload = contentType.includes("application/json")
+      ? await upstream.json()
+      : { message: await upstream.text() };
+
+    return NextResponse.json(payload, { status: upstream.status });
   } catch (error) {
-    console.error("Registration error:", error);
-    return NextResponse.json({ message: "An error occurred during registration." }, { status: 500 });
+    console.error("Registration proxy error:", error);
+    return NextResponse.json(
+      { message: "Registration service is unavailable. Please try again shortly." },
+      { status: 502 }
+    );
   }
 }

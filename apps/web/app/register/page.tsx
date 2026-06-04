@@ -1,27 +1,63 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { type FormEvent, useState } from "react";
+
+interface RegistrationFormData {
+  businessName: string;
+  ownerName: string;
+  email: string;
+  mobileNumber: string;
+  whatsappNumber: string;
+  country: string;
+  password: string;
+  acceptedTerms: boolean;
+  acceptedPrivacy: boolean;
+}
+
+const initialFormData: RegistrationFormData = {
+  businessName: "",
+  ownerName: "",
+  email: "",
+  mobileNumber: "",
+  whatsappNumber: "",
+  country: "",
+  password: "",
+  acceptedTerms: false,
+  acceptedPrivacy: false
+};
+
+function getRegistrationError(payload: unknown) {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "message" in payload
+  ) {
+    const message = (payload as { message?: unknown }).message;
+
+    if (Array.isArray(message)) {
+      return message.join(" ");
+    }
+
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+  }
+
+  return "Registration failed. Please check your details and try again.";
+}
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    businessName: "",
-    ownerName: "",
-    email: "",
-    mobileNumber: "",
-    whatsappNumber: "",
-    country: "",
-    password: "",
-    acceptedTerms: false,
-    acceptedPrivacy: false,
-  });
+  const [formData, setFormData] = useState<RegistrationFormData>(initialFormData);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
 
     try {
       const response = await fetch("/api/register", {
@@ -34,11 +70,11 @@ export default function RegisterPage() {
         alert("Registration successful! Redirecting to login...");
         router.push("/login");
       } else {
-        const errorData = await response.json();
-        alert(`Registration failed: ${errorData.message || "Please try again."}`);
+        const errorData = await response.json().catch(() => null);
+        setErrorMessage(getRegistrationError(errorData));
       }
     } catch (error) {
-      alert(`An error occurred: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setErrorMessage(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setLoading(false);
     }
@@ -54,32 +90,71 @@ export default function RegisterPage() {
         <form className="mt-8 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
           <label className="grid gap-2 text-sm font-bold">
             Business Name
-            <input name="businessName" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, businessName: e.target.value})} required />
+            <input name="businessName" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.businessName} onChange={(e) => setFormData({...formData, businessName: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Owner Name
-            <input name="ownerName" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, ownerName: e.target.value})} required />
+            <input name="ownerName" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Email Address
-            <input name="email" type="email" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
+            <input name="email" type="email" autoComplete="email" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Mobile Number
-            <input name="mobileNumber" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, mobileNumber: e.target.value})} required />
+            <input name="mobileNumber" autoComplete="tel" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.mobileNumber} onChange={(e) => setFormData({...formData, mobileNumber: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             WhatsApp Number
-            <input name="whatsappNumber" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} required />
+            <input name="whatsappNumber" autoComplete="tel" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold">
             Country
-            <input name="country" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, country: e.target.value})} required />
+            <input name="country" autoComplete="country-name" className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.country} onChange={(e) => setFormData({...formData, country: e.target.value})} required />
           </label>
           <label className="grid gap-2 text-sm font-bold md:col-span-2">
             Password
-            <input name="password" type="password" className="border border-thunder-ink/20 px-4 py-3 font-normal" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
+            <input name="password" type="password" autoComplete="new-password" minLength={10} maxLength={128} className="border border-thunder-ink/20 px-4 py-3 font-normal" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required />
           </label>
+          <label className="flex gap-3 text-sm font-bold md:col-span-2">
+            <input
+              name="acceptedTerms"
+              type="checkbox"
+              className="mt-1 size-4 shrink-0"
+              checked={formData.acceptedTerms}
+              onChange={(e) => setFormData({ ...formData, acceptedTerms: e.target.checked })}
+              required
+            />
+            <span>
+              I agree to the{" "}
+              <Link href="/terms" className="text-thunder-ember underline">
+                Terms
+              </Link>
+              .
+            </span>
+          </label>
+          <label className="flex gap-3 text-sm font-bold md:col-span-2">
+            <input
+              name="acceptedPrivacy"
+              type="checkbox"
+              className="mt-1 size-4 shrink-0"
+              checked={formData.acceptedPrivacy}
+              onChange={(e) => setFormData({ ...formData, acceptedPrivacy: e.target.checked })}
+              required
+            />
+            <span>
+              I agree to the{" "}
+              <Link href="/privacy" className="text-thunder-ember underline">
+                Privacy Policy
+              </Link>
+              .
+            </span>
+          </label>
+          {errorMessage ? (
+            <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 md:col-span-2">
+              {errorMessage}
+            </p>
+          ) : null}
           <button className="bg-thunder-ink px-6 py-4 font-bold text-white md:col-span-2 disabled:opacity-50" type="submit" disabled={loading}>
             {loading ? "Creating..." : "Create Trial Workspace"}
           </button>
