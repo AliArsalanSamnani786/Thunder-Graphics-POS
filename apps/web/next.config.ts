@@ -15,7 +15,6 @@ function normalizeOrigin(value?: string) {
 const nextConfig: NextConfig = {
   typedRoutes: true,
   outputFileTracingRoot: "../../",
-  transpilePackages: ["@thunder-pos/api"],
   async rewrites() {
     const apiUrl = normalizeOrigin(process.env.API_URL || process.env.NEXT_PUBLIC_API_URL);
     const appUrl = normalizeOrigin(process.env.APP_URL);
