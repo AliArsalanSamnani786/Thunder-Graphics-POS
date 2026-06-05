@@ -1,12 +1,5 @@
 import { NextResponse } from "next/server";
-
-function getApiBaseUrl(request: Request) {
-  return (
-    process.env.API_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    new URL(request.url).origin
-  ).replace(/\/$/, "");
-}
+import { buildApiUrl, resolveApiBaseUrl } from "./api-url";
 
 function getGatewayMessage(status: number, payload: unknown) {
   if (status === 404) {
@@ -48,9 +41,9 @@ export async function POST(request: Request) {
       headers.set("user-agent", userAgent);
     }
 
-    const apiBaseUrl = getApiBaseUrl(request);
-    const targetUrl = `${apiBaseUrl}/api/v1/auth/register-business`;
-    
+    const apiBaseUrl = resolveApiBaseUrl(request);
+    const targetUrl = buildApiUrl(apiBaseUrl, "/auth/register-business");
+
     console.log(`[Proxy] Request URL: ${request.url}`);
     console.log(`[Proxy] API Base URL: ${apiBaseUrl}`);
     console.log(`[Proxy] Target URL: ${targetUrl}`);

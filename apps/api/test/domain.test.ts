@@ -6,13 +6,18 @@ import { PrismaService } from "../src/common/database/prisma.service";
 
 describe("core domain foundations", () => {
   it("processes a sale with correct input", async () => {
+    const accountFindFirst = vi.fn(async ({ where }: { where: { code: string } }) => ({
+      id: where.code === "REV-001" ? "account_revenue" : "account_cash"
+    }));
+    const journalCreate = vi.fn();
     const mockPrisma = {
       $transaction: vi.fn(async (cb) => {
         return cb({
           sale: { create: vi.fn().mockResolvedValue({ id: "sale_1", receiptNo: "REC-123" }) },
           stockItem: { findFirst: vi.fn().mockResolvedValue({ id: "si_1", quantity: 10 }), update: vi.fn() },
           stockMovement: { create: vi.fn() },
-          journalEntry: { create: vi.fn() }
+          account: { findFirst: accountFindFirst },
+          journalEntry: { create: journalCreate }
         });
       })
     } as unknown as PrismaService;
@@ -25,6 +30,8 @@ describe("core domain foundations", () => {
     });
 
     expect(result.id).toBe("sale_1");
+    expect(accountFindFirst).toHaveBeenCalledTimes(2);
+    expect(journalCreate).toHaveBeenCalledOnce();
   });
 
   it("rejects negative stock unless enabled", () => {
@@ -42,4 +49,3 @@ describe("core domain foundations", () => {
     ).not.toThrow();
   });
 });
-
