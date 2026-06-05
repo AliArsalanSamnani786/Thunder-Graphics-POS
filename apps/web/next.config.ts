@@ -14,23 +14,7 @@ function normalizeOrigin(value?: string) {
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  outputFileTracingRoot: "../../",
-  async rewrites() {
-    const apiUrl = normalizeOrigin(process.env.API_URL || process.env.NEXT_PUBLIC_API_URL);
-    const appUrl = normalizeOrigin(process.env.APP_URL);
-    const vercelUrl = normalizeOrigin(process.env.VERCEL_URL);
-
-    if (!apiUrl || apiUrl === appUrl || apiUrl === vercelUrl) {
-      return [];
-    }
-
-    return [
-      {
-        source: "/api/v1/:path*",
-        destination: `${apiUrl}/api/v1/:path*`
-      }
-    ];
-  }
-};
+  transpilePackages: ["@thunder-pos/api"]
+  };
 
 export default nextConfig;
