@@ -3,7 +3,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import helmet from "helmet";
-import { AppModule } from "./app.module";
+import { AppModule } from "./AppModule";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

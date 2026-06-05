@@ -1,7 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { AppModule } from "./app.module";
+import { AppModule } from "./AppModule";
 
 type ExpressHandler = (request: IncomingMessage, response: ServerResponse) => void;
 
