@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import type { IncomingMessage, ServerResponse } from "node:http";

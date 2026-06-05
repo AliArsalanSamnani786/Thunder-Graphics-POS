@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nest start --watch",
     "start:prod": "node dist/main.js",
-    "build": "prisma generate --schema=../../prisma/schema.prisma && npx nest build",
+    "build": "corepack pnpm --filter @thunder-pos/shared build && prisma generate --schema=../../prisma/schema.prisma && npx nest build",
     "lint": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"

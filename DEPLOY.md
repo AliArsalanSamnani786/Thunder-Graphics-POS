@@ -1,24 +1,38 @@
 # Deployment Instructions for Thunder POS
 
-You don't need to do any technical setup. Follow these two simple steps to go live.
+## Vercel
 
-### Step 1: Upload to GitHub
-1.  Open your terminal in `C:\Users\CZ\Desktop\Thunder-POS`.
-2.  Run these commands to save your code to GitHub:
-    ```bash
-    git init
-    git add .
-    git commit -m "Production Ready: Secure POS SaaS"
-    # Create a new repository on GitHub and run these:
-    # git remote add origin <YOUR_GITHUB_REPO_URL>
-    # git push -u origin main
-    ```
+Deploy the repository root to Vercel. Do not set the Vercel root directory to `apps/web`; the root `vercel.json` deploys both the Next.js app and `/api/v1/*` serverless API routes.
 
-### Step 2: One-Click Deploy to Vercel
-1.  Go to [Vercel](https://vercel.com/new).
-2.  Log in and click "Import Project".
-3.  Select the GitHub repository you just created.
-4.  **Important:** In the Vercel "Environment Variables" section, add your `DATABASE_URL` (this will be provided by your cloud PostgreSQL provider like Neon or Supabase).
-5.  Click "Deploy".
+Required environment variables:
 
-**That's it.** The system is now fully configured for production.
+- `DATABASE_URL`: production PostgreSQL connection string.
+- `JWT_ACCESS_SECRET`: strong random secret.
+- `JWT_REFRESH_SECRET`: strong random secret.
+- `APP_URL`: your deployed app URL, for example `https://thunder-graphics-pos.vercel.app`.
+- `API_URL`: same deployed app URL unless the API is deployed separately.
+- `NEXT_PUBLIC_API_URL`: same deployed app URL unless the API is deployed separately.
+
+## Database
+
+Run migrations against the production database before testing registration:
+
+```bash
+pnpm prisma:deploy
+```
+
+If the database schema is missing, the registration button can route correctly but still fail when the API tries to create the tenant and owner user.
+
+## Health Check
+
+After deploy, verify the API route before testing registration:
+
+```bash
+curl https://your-vercel-domain.vercel.app/api/v1/health
+```
+
+Expected response:
+
+```json
+{"status":"ok","service":"thunder-pos-api","checkedAt":"..."}
+```

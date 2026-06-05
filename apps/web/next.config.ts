@@ -1,20 +1,12 @@
 import type { NextConfig } from "next";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-function normalizeOrigin(value?: string) {
-  if (!value) {
-    return undefined;
-  }
-
-  try {
-    return new URL(value.includes("://") ? value : `https://${value}`).origin;
-  } catch {
-    return undefined;
-  }
-}
+const monorepoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  transpilePackages: ["@thunder-pos/api"],
+  outputFileTracingRoot: monorepoRoot,
   webpack: (config) => {
     config.externals = [...(config.externals || []), { canvas: "canvas" }];
     return config;
