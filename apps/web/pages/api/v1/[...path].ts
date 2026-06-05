@@ -1,1 +1,1 @@
-export { default } from '@thunder-pos/api/dist/vercel'; 
+export { default } from '@thunder-pos/api/src/vercel'; 

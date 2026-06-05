@@ -14,7 +14,11 @@ function normalizeOrigin(value?: string) {
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  transpilePackages: ["@thunder-pos/api"]
-  };
+  transpilePackages: ["@thunder-pos/api"],
+  webpack: (config) => {
+    config.externals = [...(config.externals || []), { canvas: "canvas" }];
+    return config;
+  }
+};
 
 export default nextConfig;
