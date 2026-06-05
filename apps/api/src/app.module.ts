@@ -16,7 +16,7 @@ import { TenantModule } from "./modules/tenant/tenant.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }]),
     DatabaseModule,
     HealthModule,
     TenantModule,
