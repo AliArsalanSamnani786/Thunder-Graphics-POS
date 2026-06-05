@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "pnpm run prisma:generate",
     "dev": "pnpm --parallel --filter @thunder-pos/web --filter @thunder-pos/api dev",
-    "build": "pnpm --filter @thunder-pos/api build && pnpm --filter @thunder-pos/web build",
+    "build": "pnpm -r exec rm -rf dist .next && pnpm --filter @thunder-pos/api build && pnpm --filter @thunder-pos/web build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
