@@ -48,6 +48,14 @@ export class AuthService {
             status: "TRIAL",
             trialStartAt: new Date(),
             trialEndAt: addTrialDays(new Date()),
+            riskEvents: {
+              create: {
+                level: risk.level,
+                reason: risk.reasons.join(", "),
+                deviceId: dto.deviceFingerprint, // This is our Hardware ID
+                ipAddress: metadata.ipAddress
+              }
+            },
             users: {
               create: {
                 name: dto.ownerName,

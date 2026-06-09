@@ -8,8 +8,26 @@ export class TenantService {
       throw new ForbiddenException("Tenant context is required.");
     }
 
-    if (actor.tenant.status === "SUSPENDED_TRIAL_EXPIRED" || actor.tenant.status === "SUSPENDED") {
-      throw new ForbiddenException("Workspace is suspended.");
+    const { status, trialEndAt } = actor.tenant;
+
+    // 1. Check if the business is manually suspended by the Super Admin
+    if (status === "SUSPENDED") {
+      throw new ForbiddenException("This workspace has been suspended. Please contact support to reactivate.");
+    }
+
+    // 2. Check for trial expiration
+    if (status === "TRIAL" || status === "SUSPENDED_TRIAL_EXPIRED") {
+      const now = new Date();
+      const expiry = trialEndAt ? new Date(trialEndAt) : null;
+
+      if (!expiry || now > expiry) {
+        throw new ForbiddenException("Your free trial has expired. Please upgrade to a paid plan to continue selling.");
+      }
+    }
+
+    // 3. Block manual review status
+    if (status === "MANUAL_REVIEW") {
+      throw new ForbiddenException("Your account is under manual review for security reasons.");
     }
 
     return actor.tenant;

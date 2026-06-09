@@ -4,6 +4,7 @@ export interface TenantContext {
   tenantId: string;
   businessId: string;
   status: TenantStatus;
+  trialEndAt?: Date | string | null;
 }
 
 export interface AuthenticatedActor {
